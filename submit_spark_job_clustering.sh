@@ -1,10 +1,12 @@
 #!/bin/bash
 
+# This Bash script will submit pyspark_clustering.py to the Spark cluster.
+
 # Define the path to the local spark-submit folder
 SPARK_SUBMIT_PATH="/home/ruddy/spark-cluster/spark-env/bin/spark-submit"
 
 # Define the path to the PySpark script
-SCRIPT_PATH="$(dirname "$0")/clustering_postgre.py"
+SCRIPT_PATH="$(dirname "$0")/pyspark_clustering.py"
 
 # Path to the PostgreSQL JDBC driver
 JDBC_DRIVER_PATH="/home/ruddy/jdbc/postgresql-jdbc.jar"
@@ -20,4 +22,4 @@ $SPARK_SUBMIT_PATH \
     --name "Data Processing Demonstration" \
     $SCRIPT_PATH
 
-echo "Spark clustering job submitted successfully."
+echo "Spark Clustering job submitted successfully."

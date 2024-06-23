@@ -1,3 +1,8 @@
+'''
+Pyspark script to transfer data from staging area to production database, and store it properly in the dimension and fact tables.
+'''
+
+
 from pyspark.sql import SparkSession
 import os
 from dotenv import load_dotenv
@@ -67,7 +72,7 @@ def get_max_orderid():
 # Get the maximum orderid from the fact_orders table in the production database
 max_orderid = get_max_orderid()
 
-# Read new data from sales_staging_cleaned with limit of 10000 and orderid greater than the max orderid from fact_orders
+# Read new data from sales_staging_cleaned with the limit of 10000, and orderid greater than the max orderid from fact_orders
 query = f"(SELECT * FROM public.sales_staging_cleaned WHERE orderid > {max_orderid} ORDER BY orderid LIMIT 10000) AS new_data"
 sdf = spark.read.jdbc(url=staging_jdbc_url, table=query, properties=staging_connection_properties)
 
@@ -100,19 +105,16 @@ else:
     # For the fact_orders table, while we still filter out records with duplicate order IDs, no need to check existing records since we already have max_orderid
     fact_orders_df = sdf.select("orderid", "dateid", "countryid", "categoryid", "amount").dropDuplicates(["orderid"])
 
-    # Insert new records into dim_date
+    # Insert new records to all the tables
     if not dim_date_df.isEmpty():
         dim_date_df.write.jdbc(url=production_jdbc_url, table="public.dim_date", mode="append", properties=production_connection_properties)
 
-    # Insert new records into dim_category
     if not dim_category_df.isEmpty():
         dim_category_df.write.jdbc(url=production_jdbc_url, table="public.dim_category", mode="append", properties=production_connection_properties)
 
-    # Insert new records into dim_country
     if not dim_country_df.isEmpty():
         dim_country_df.write.jdbc(url=production_jdbc_url, table="public.dim_country", mode="append", properties=production_connection_properties)
 
-    # Insert new records into fact_orders
     if not fact_orders_df.isEmpty():
         fact_orders_df.write.jdbc(url=production_jdbc_url, table="public.fact_orders", mode="append", properties=production_connection_properties)
 

@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# This Bash script will submit pyspark_data_cleaning.py and pyspark_data_transfer.py to the Spark cluster, and they will run side by side until
-# all data has been processed.
+# This Bash script submits two PySpark scripts, pyspark_data_cleaning.py and pyspark_data_transfer.py, to the Spark cluster.
+# Each script processes 10,000 rows at a time. After completing the processing of each 10,000-row batch, 
+# the PySpark scripts will automatically be resubmitted to the Spark cluster to process the next 10,000 rows.
+# This cycle continues until the entire 300,000 rows of data have been both cleaned and transferred.
+
 
 # Define the path to the local spark-submit folder
 SPARK_SUBMIT_PATH="/home/ruddy/spark-cluster/spark-env/bin/spark-submit"

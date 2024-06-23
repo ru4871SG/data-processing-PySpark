@@ -1,3 +1,8 @@
+'''
+PySpark script to clean data in the staging area.
+'''
+
+
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import regexp_replace, when, col
 import os
@@ -128,6 +133,6 @@ else:
 # Stop the SparkSession
 spark.stop()
 
-# Create a checkpoint file to signal that data is ready for data transfer (pyspark_data_transfer.py)
+# Create a checkpoint file to signal that data is ready for data transfer (the data transfer script is pyspark_data_transfer.py)
 with open("/home/ruddy/spark-cluster/cleaned_batch_ready", "w") as f:
     f.write("Batch 1 cleaned data ready")
